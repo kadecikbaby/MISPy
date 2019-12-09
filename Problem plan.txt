@@ -1,0 +1,78 @@
+##Prad maksymalny
+print(pulp.value(prad_max.objective))
+
+prob = LpProblem("Najmniejsze koszty",LpMinimize)#deklaracja problemu i kierunku optymalizacji
+
+#Godziny każdego w poniedziałek
+pIg=LpVariable("pIg",0) #IGOR
+pMg=LpVariable("pMg",0) #MAREK
+pFg=LpVariable("pFg",0) #FRANEK
+pPg=LpVariable("pPg",0) #PIOTREK
+pAg=LpVariable("pAg",0) #AGNIESZKA
+pZg=LpVariable("pZg",0) #ZENON
+#Godziny każdego we wtorek
+wIg=LpVariable("wIg",0) 
+wMg=LpVariable("wMg",0) 
+wFg=LpVariable("wFg",0) 
+wPg=LpVariable("wPg",0) 
+wAg=LpVariable("wAg",0) 
+wZg=LpVariable("wZg",0) 
+#Godziny każdego w środe
+srIg=LpVariable("srIg",0) 
+srMg=LpVariable("srMg",0) 
+srFg=LpVariable("srFg",0) 
+srPg=LpVariable("srPg",0) 
+srAg=LpVariable("srAg",0) 
+srZg=LpVariable("srZg",0) 
+#Godziny każdego w czwartek
+cIg=LpVariable("cIg",0) 
+cMg=LpVariable("cMg",0) 
+cFg=LpVariable("cFg",0) 
+cPg=LpVariable("cPg",0) 
+cAg=LpVariable("cAg",0) 
+cZg=LpVariable("cZg",0) 
+#Godziny każdego w piątek
+ptIg=LpVariable("ptIg",0) 
+ptMg=LpVariable("ptMg",0) 
+ptFg=LpVariable("ptFg",0) 
+ptPg=LpVariable("ptPg",0) 
+ptAg=LpVariable("ptAg",0) 
+ptZg=LpVariable("ptZg",0) 
+#Godziny każdego w sobote
+sIg=LpVariable("sIg",0) 
+sMg=LpVariable("sMg",0) 
+sFg=LpVariable("sFg",0) 
+sPg=LpVariable("sPg",0) 
+sAg=LpVariable("sAg",0) 
+sZg=LpVariable("sZg",0) 
+
+#suma godzin w tygodniu poszczególnych osób
+Ig=pIg+wIg+srIg+cIg+ptIg+sIg
+Mg=pMg+wMg+srMg+cMg+ptMg+sMg
+Fg=pFg+wFg+srFg+cFg+ptFg+sFg             
+Ag=pAg+wAg+srAg+cAg+ptAg+sAg
+Zg=pZg+wZg+srZg+cZg+ptZg+sZg             
+Pg=pPg+wPg+srPg+cPg+ptPg+sPg             
+
+prob += 170*Ig+60*Mg+80*Fg+200*Pg+90*Ag+10*Zg #funkcja celu
+#ograniczenia wynikające z dostępności pracowników
+prob += pIg + wIg + srIg + cIg + ptIg + sIg <= 4
+prob += pMg+wMg+srMg+cMg+ptMg+sMg<=4
+prob += pFg+wFg+srFg+cFg+ptFg+sFg<=3
+prob += pPg+wPg+srPg+cPg+ptPg+sPg<=8
+prob += pAg+wAg+srAg+cAg+ptAg+sAg<=10
+prob += pZg+wZg+srZg+cZg+ptZg+sZg<=5
+#ograniczenia wynikające z godzin otwarcia
+prob += pIg+pMg+pFg+pPg+pAg+pZg ==8
+prob += wIg+wMg+wFg+wPg+wAg+wZg==4
+prob += srIg+srMg+srFg+srPg+srAg+srZg==4
+prob += cIg+cMg+cFg+cPg+cAg+cZg==4
+prob += ptIg+ptMg+ptFg+ptPg+ptAg+ptZg==8
+prob += sIg+sMg+sFg+sPg+sAg+sZg==2
+
+prob.solve()#uruchomienie solvera
+print("Status = ",LpStatus[prob.status])#sprawdzenie czy rozwiązanie jest optymalne
+for v in prob.variables():#wyświetlenie kto w jaki dzień ma ile pracować
+    if (v.varValue!=0):
+        print(v.name, "=", v.varValue)
+print("Koszty pracownika wyniesie {} zl‚  ".format( value(prob.objective)))#wyświetlenie kosztów minimalnych tygodniowo

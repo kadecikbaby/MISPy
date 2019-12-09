@@ -1,0 +1,88 @@
+from pulp import * #importowanie bibliotek
+
+prob = LpProblem("Problem dystrybucji piwa",LpMinimize)#deklaracja problemu i kierunku optymalizacji
+
+#zmienne zwiazane z browarami i barami 
+#browar X
+xb=LpVariable("XB",0,20,LpInteger)
+xp=LpVariable("XP",0,20,LpInteger)
+xk=LpVariable("XK",0,20,LpInteger)
+xm=LpVariable("XM",0,20,LpInteger)
+#browar y
+yb=LpVariable("YB",0,20,LpInteger)
+yp=LpVariable("YP",0,20,LpInteger)
+yk=LpVariable("YK",0,20,LpInteger)
+ym=LpVariable("YM",0,20,LpInteger)
+
+#zapotrzebowanie mniejsze ni¿ mo¿liwoœci produkcyjne
+prob+=15*xb+10*xp+5*xk+0*xm+2*yb+15*yp+20*yk+0*ym #funkcja celu
+#ograniczenia
+prob+=xb+yb==19
+prob+=xp+yp==5
+prob+=xk+yk==10
+prob+=xb+xp+xk+xm==20
+prob+=yb+yp+yk+ym==20
+
+prob.solve()#uruchomienie solvera rozwi¹zuj¹cego problem programowania liniowego
+print("Status = ",LpStatus[prob.status])#sprawdzenie czy rozwi¹zanie jest optymalne
+for v in prob.variables():
+    if v.varValue!=0:
+        print(v.name, "=", v.varValue) #wyœwietlenie rozwi¹zania
+        
+print("Caly koszt =",value(prob.objective))#wyœwietlenie ca³kowitego kosztu transportu
+
+prob = LpProblem("Problem dystrybucji piwa",LpMinimize)#deklaracja problemu i kierunku optymalizacji
+
+#zmienne zwiazane z browarami i barami 
+#browar X
+xb=LpVariable("XB",0,10,LpInteger)
+xp=LpVariable("XP",0,10,LpInteger)
+xk=LpVariable("XK",0,10,LpInteger)
+#browa Y
+yb=LpVariable("YB",0,20,LpInteger)
+yp=LpVariable("YP",0,20,LpInteger)
+yk=LpVariable("YK",0,20,LpInteger)
+#dodatkowy browar W (zmienna sztuczna)
+wb=LpVariable("WB",0,20,LpInteger)
+wp=LpVariable("WP",0,20,LpInteger)
+wk=LpVariable("WK",0,20,LpInteger)
+
+#zapotrzebowanie wiêksze ni¿ mo¿liwoœci produkcyjne
+prob+=15*xb+10*xp+5*xk+2*yb+15*yp+20*yk+1*wb+1*wp+1*wk #funkcja celu
+#ograniczenia
+prob+=xb+yb+wb==19
+prob+=xp+yp+wp==5
+prob+=xk+yk+wk==10
+prob+=xb+xp+xk==10
+prob+=yb+yp+yk==20
+prob+=wb+wp+wk==(xb+yb+wb+xp+yp+wp+xk+yk+wk)-(xb+xp+xk+yb+yp+yk)
+
+prob.solve()#uruchomienie solvera rozwi¹zuj¹cego problem programowania liniowego
+print("Status = ",LpStatus[prob.status])#sprawdzenie czy rozwi¹zanie jest optymalne
+for v in prob.variables():
+    if v.varValue!=0:
+        print(v.name, "=", v.varValue) #wyœwietlenie rozwi¹zania
+        
+print("Caly koszt =",value(prob.objective))#wyœwietlenie ca³kowitego kosztu transportu
+
+prob = LpProblem("Problem dystrybucji piwa",LpMinimize)#deklaracja problemu i kierunku optymalizacji
+#zmienne zwiazane z browarami i barami wraz 
+#browar X
+xb=LpVariable("XB",0,19,LpInteger)
+#browar W dodatkowy (zmienna sztuczna)
+wb=LpVariable("WB",0,50,LpInteger)
+
+#sprawdzenie czy zmienne sztuczne dzia³aj¹ odpowiednio
+prob+=15*xb+1*wb #funkcja celu
+#ograniczenia
+prob+=xb+wb==19
+prob+=xb==19
+prob+=wb==(xb+wb)-(xb)
+
+prob.solve()#uruchomienie solvera rozwi¹zuj¹cego problem programowania liniowego
+print("Status = ",LpStatus[prob.status])#sprawdzenie czy rozwi¹zanie jest optymalne
+for v in prob.variables():
+    if v.varValue!=0:
+        print(v.name, "=", v.varValue) #wyœwietlenie rozwi¹zania
+        
+print("Caly koszt =",value(prob.objective))#wyœwietlenie ca³kowitego kosztu transportu

@@ -1,0 +1,44 @@
+# Importowanie bibliotek
+import numpy as np 
+import pandas as pd 
+import seaborn as sns
+%matplotlib inline
+from matplotlib import pyplot as plt
+from matplotlib import style
+from sklearn import linear_model
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import Perceptron
+from sklearn.linear_model import SGDClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC, LinearSVC
+from sklearn.naive_bayes import GaussianNB
+from sklearn.linear_model import LinearRegression
+
+#pobieranie danych z excela
+train = pd.read_excel ("oceny.xlsx")
+test = pd.read_excel ("test_oceniania.xlsx")
+
+#przygotowanie danych do uczenia
+xcos=pd.DataFrame(train).to_numpy()
+wynik_procentowy=xcos[:,0].reshape(-1, 1)
+ocena=xcos[:,1]
+xcos1=pd.DataFrame(train).to_numpy()
+wyniki_testowe=xcos1[:,0].reshape(-1, 1)
+
+model = LinearRegression().fit(wynik_procentowy, ocena) #tworzenie modelu za pomoc¹ regresji liniowej
+
+ocena_przewid = np.around(model.predict(wyniki_testowe), decimals=1) # testowanie modelu
+ocena_przewidywana=ocena_przewid.reshape(-1,1)
+#for k in range(50):
+#    if (ocena_przewidywana[k,0]<3):
+#        ocena_przewidywana[k,0]=2
+#przedstawienie wyników na wykresie         
+plt.scatter(wynik_procentowy,ocena, color="blue")
+plt.scatter(wyniki_testowe,ocena_przewid, color="red")
+plt.axis([0, 100, 1, 6])
+plt.show()
+
+for k in range(50): #wyœwietlenie wyniku
+    print(wyniki_testowe[k,0], " " ,ocena_przewidywana[k,0])

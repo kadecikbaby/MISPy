@@ -1,0 +1,31 @@
+from pulp import * #importowanie biblioteki potrzebnej przy programowaniu liniowym
+prad_max = pulp.LpProblem("prad_max", pulp.LpMaximize)#deklaracja problemu i kierunku optymalizacji
+#deklaracja zmiennych decyzyjnych
+I_1 = pulp.LpVariable('I_1', lowBound=0, cat='Continuous')
+I_2 = pulp.LpVariable('I_2', lowBound=0, cat='Continuous')
+I_3 = pulp.LpVariable('I_3', lowBound=0, cat='Continuous')
+I_4 = pulp.LpVariable('I_4', lowBound=0, cat='Continuous')
+I_5 = pulp.LpVariable('I_5', lowBound=0, cat='Continuous')
+# funkcja celu ,szukamy maksimum
+prad_max += I_1 + I_2
+
+# ograniczenia na prądy wynikające z elementów i praw Kirchhoffa
+
+prad_max += I_1 <=2, "I1"
+prad_max += I_2 <=3, "I2"
+prad_max += I_3 <=4, "I3"
+prad_max += I_4 <=2, "I4"
+prad_max += I_5 <=2, "I5"
+prad_max += I_1 * 8 == I_2 * 6, "K1"
+prad_max += I_4 * 10 == I_5 * 8,"K2"
+prad_max += I_1+I_2 == I_3, "KK1"
+prad_max += I_4+I_5 == I_3, "KK2"
+
+prad_max.solve() #uruchomienie solvera rozwiązującego problem
+print("Status = ",LpStatus[prad_max.status])# sprawdzenie wyniku optymalizacji
+
+for variable in prad_max.variables(): #wypisanie poszczególnych prądów
+    print("{} = {}".format(variable.name, variable.varValue))
+	
+##Prad maksymalny
+print(pulp.value(prad_max.objective))

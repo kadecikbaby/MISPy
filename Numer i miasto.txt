@@ -1,0 +1,41 @@
+numer=434264355 #program po podaniu numeru liczbami wypisuje go słownie oraz podaje miasto z jakiego ktoś dzwoni 
+
+class NumerTelefonu():#budowa klasy
+    def __init__(self, numer_telefonu):#funkcja wykonująca się automatycznie przypisująca wartości do zmiennych
+        self.numer = numer_telefonu    
+    @property
+    def miasto_k(self): #metoda sprawdzająca kierunkowy i wypisująca miasto
+        miasto = ""
+        tempNum = str(self.numer)
+        if (tempNum[0] == "4" and tempNum[1] == "4"):
+            miasto = "Lodz"       
+        elif (tempNum[0] == "2" and tempNum[1] == "2"):
+            miasto = "Warszawa"   
+        else: 
+            miasto = "Inne"       
+        return miasto
+    
+    def __repr__(self):#metoda wypisująca cyfry słownie i umieszczająca go w zmiennej
+        cyfry_slownik = {
+            '1' : "jeden",
+            '2' : "dwa",
+            '3' : "trzy",
+            '4' : "cztery",
+            '5' : "piec",
+            '6' : "szesc",
+            '7' : "siedem",
+            '8' : "osiem",
+            '9' : "dziewiec",
+            '0' : "zero",
+        }
+        numer_słownie = ""
+        for x in str(self.numer):
+            numer_słownie += (cyfry_slownik[x] + " ")
+        return numer_słownie
+    
+if len(str(numer)) != 9: #sprawdzenie czy numer ma odpowiednią ilość cyfr
+    print("Bledny numer")
+else:
+    nr = NumerTelefonu(numer)# użycie klasy Numer telefonu
+    print(nr)#wyświetlenie numeru słownie
+    print(nr.miasto_k) #wyświetlenie miasta kierunkowego
